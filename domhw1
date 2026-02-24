@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My To Do</title>
+</head>
+<body>
+
+  <h1>To Do List Items</h1>
+
+  <div id="tasks"></div>
+
+  <button onclick="addItem()">Add Work Item</button>
+  <button onclick="completeItem()">Mark an item Done</button>
+
+<script>
+    const WorkItem = class {
+
+        // Private fields
+        #task;
+        #dueDate;
+        #priority;
+        #isComplete;
+
+        constructor(task, dueDate, priority) {
+            this.#task = task;
+            this.#dueDate = dueDate;
+            this.#priority = priority;
+            this.#isComplete = false;
+        }
+
+        // Getters
+        getTask() {
+            return this.#task;
+        }
+
+        getDueDate() {
+            return this.#dueDate;
+        }
+
+        getPriority() {
+            return this.#priority;
+        }
+
+        getIsComplete() {
+            return this.#isComplete;
+        }
+
+        // Setter
+        setComplete(status) {
+            this.#isComplete = status;
+        }
+    };
+
+    let workItems = [];
+
+    function redraw() {
+
+        const taskDiv = document.getElementById("tasks");
+
+        // Clear existing items
+        while (taskDiv.firstChild) {
+            taskDiv.removeChild(taskDiv.firstChild);
+        }
+
+        // Rebuild list
+        for (let i = 0; i < workItems.length; i++) {
+
+            const item = workItems[i];
+
+            const p = document.createElement("p");
+
+            p.textContent =
+                i + ": " +
+                item.getTask() +
+                " | Due: " +
+                item.getDueDate() +
+                " | Priority: " +
+                item.getPriority();
+
+            // Color based on completion
+            if (item.getIsComplete()) {
+                p.style.color = "green";
+                p.style.textDecoration = "line-through";
+            } else {
+                p.style.color = "red";
+            }
+
+            taskDiv.appendChild(p);
+        }
+    }
+
+    function addItem() {
+
+        const task = prompt("Enter task description:");
+        if (!task) return;
+
+        const dueDate = prompt("Enter due date:");
+        if (!dueDate) return;
+
+        const priority = prompt("Enter priority:");
+        if (!priority) return;
+
+        const newItem = new WorkItem(task, dueDate, priority);
+
+        workItems.push(newItem);
+
+        redraw();
+    }
+
+    function completeItem() {
+
+        const index = prompt("Enter the task number to mark complete:");
+        const itemNumber = parseInt(index);
+
+        if (!isNaN(itemNumber) &&
+            itemNumber >= 0 &&
+            itemNumber < workItems.length) {
+
+            workItems[itemNumber].setComplete(true);
+            redraw();
+
+        } else {
+            alert("Invalid task number.");
+        }
+    }
+</script>
+
+</body>
+</html>
